@@ -1,6 +1,6 @@
 package:
   name: cuda-arch
-  version: ${{ version }}
+  version: ${{ cuda_arch_version }}
 
 source:
   url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_documentation/LICENSE.txt
@@ -9,22 +9,37 @@ source:
 build:
   # Add new versions to conda_build_config.yaml; only update the build number if
   # dependencies change.
-  number: 0
+  number: 3
   noarch: generic
+  skip:
+    - match(cuda_arch_version, "<" ~ cuda_arch_version_min)
+    - match(cuda_arch_version, ">" ~ cuda_arch_version_max)
+  variant:
+    use_keys:
+      - cuda_compiler_version
 
 requirements:
   run_exports:
-    - cuda-arch >=${{ version }}
+    - cuda-arch >=${{ cuda_arch_version }}
+  run:
+    # If your package manager doesn't implement __cuda_arch, you are allowed to install the
+    # oldest arch supported by your CUDA major version.
+    - if: cuda_arch_version == cuda_arch_version_min
+      then:
+        - cuda-version ${{ cuda_compiler_version }}.*
+      else:
+        - __cuda_arch
   run_constraints:
-    - __cuda_arch ${{ version }}.*
+    # If your package manager implements __cuda_arch we require this package to match it.
+    - __cuda_arch ${{ cuda_arch_version }}.*
 
 tests:
   - script:
-    - exit 0
+      - exit 0
 
 about:
   homepage: https://developer.nvidia.com/cuda-toolkit
-  summary: 'A meta-package that pins a minimum supported CUDA architecture'
+  summary: "A meta-package that pins a minimum supported CUDA architecture"
   description: >
     The cuda-arch package represents a minimum supported target CUDA architecture / compute
     capability. Depending on this package declares that a CUDA device with at least the
