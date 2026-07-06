@@ -9,7 +9,7 @@ source:
 build:
   # Add new versions to conda_build_config.yaml; only update the build number if
   # dependencies change.
-  number: 3
+  number: 1
   noarch: generic
   skip:
     - match(cuda_arch_version, "<" ~ cuda_arch_version_min)
