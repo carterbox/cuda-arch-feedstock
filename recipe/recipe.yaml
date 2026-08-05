@@ -1,3 +1,9 @@
+context:
+  # This definition exists so that conda-smithy includes cuda_compiler_version in the
+  # variants config, so that conda-forge-ci-setup set CONDA_OVERRIDE_CUDA and
+  # CONDA_OVERRIDE_CUDA_ARCH
+  cuda_version: ${{ cuda_compiler_version }}
+
 package:
   name: cuda-arch
   version: ${{ cuda_arch_version }}
@@ -9,29 +15,20 @@ source:
 build:
   # Add new versions to conda_build_config.yaml; only update the build number if
   # dependencies change.
-  number: 1
+  number: 2
   noarch: generic
-  skip:
-    - match(cuda_arch_version, "<" ~ cuda_arch_version_min)
-    - match(cuda_arch_version, ">" ~ cuda_arch_version_max)
-  variant:
-    use_keys:
-      - cuda_compiler_version
 
 requirements:
   run_exports:
     - cuda-arch >=${{ cuda_arch_version }}
   run:
-    # If your package manager doesn't implement __cuda_arch, you are allowed to install the
-    # oldest arch supported by your CUDA major version.
-    - if: cuda_arch_version == cuda_arch_version_min
-      then:
-        - cuda-version ${{ cuda_compiler_version }}.*
-      else:
-        - __cuda_arch
-  run_constraints:
-    # If your package manager implements __cuda_arch we require this package to match it.
-    - __cuda_arch ${{ cuda_arch_version }}.*
+    # Originally this package proposed to use run_constrained like cuda-version. This would
+    # have allowed build-runners to not have the __cuda_arch virtual package, but because of
+    # a bug in every conda package manager where run_constraints on virtual packages were
+    # ignored, we must use run instead to ensure that the constraint is followed. It also
+    # prevents users without __cuda_arch from installing this package which could result in
+    # segmentation faults if their device is unsupported.
+    - __cuda_arch >=${{ cuda_arch_version }}
 
 tests:
   - script:
@@ -46,7 +43,7 @@ about:
     declared compute capability is required.
 
     Similar to how the cuda-version package is constrained by the __cuda virtual package,
-    the cuda-arch package is constrained by the __cuda_arch virtual package. The __cuda_arch
+    the cuda-arch package requires the __cuda_arch virtual package. The __cuda_arch
     virtual package provides the minimum compute capability of the available CUDA devices
     detected on the system. The cuda-arch package allows packages to express a minimum
     supported compute capability without depending on __cuda_arch directly.
