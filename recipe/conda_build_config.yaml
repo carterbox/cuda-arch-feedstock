@@ -21,24 +21,4 @@ cuda_arch_version:
   - 12.1
 
 cuda_compiler_version:
-  - 12
-  - 13
-
-# The cuda_arch ranges for CUDA major versions 12 and 13 only overlap for one arch: 7.5. We
-# have two variants of this package: one as the min arch of CUDA 13 which doesn't require
-# __cuda_arch and the other as a normal arch of CUDA 12 which does require __cuda_arch. We
-# don't need to build archs >= 8.0 twice because the requirements will be identical for
-# either CUDA major version.
-
-cuda_arch_version_min:
-  - 5.0
-  - 7.5
-
-cuda_arch_version_max:
-  - 7.5
   - 99.9
-
-zip_keys:
-  - - cuda_compiler_version
-    - cuda_arch_version_min
-    - cuda_arch_version_max

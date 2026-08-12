@@ -10,7 +10,7 @@ Package license: LicenseRef-NVIDIA-End-User-License-Agreement
 Summary: A meta-package that pins a minimum supported CUDA architecture
 
 The cuda-arch package represents a minimum supported target CUDA architecture / compute capability. Depending on this package declares that a CUDA device with at least the declared compute capability is required.
-Similar to how the cuda-version package is constrained by the __cuda virtual package, the cuda-arch package is constrained by the __cuda_arch virtual package. The __cuda_arch virtual package provides the minimum compute capability of the available CUDA devices detected on the system. The cuda-arch package allows packages to express a minimum supported compute capability without depending on __cuda_arch directly.
+Similar to how the cuda-version package is constrained by the __cuda virtual package, the cuda-arch package requires the __cuda_arch virtual package. The __cuda_arch virtual package provides the minimum compute capability of the available CUDA devices detected on the system. The cuda-arch package allows packages to express a minimum supported compute capability without depending on __cuda_arch directly.
 
 Current build status
 ====================
@@ -43,31 +43,73 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `cuda-arch` can be installed with `conda`:
+How to use
+----------
+
+<details>
+<summary>With conda</summary>
 
 ```
 conda install cuda-arch
 ```
 
-or with `mamba`:
+</details>
+
+<details>
+<summary>With mamba</summary>
 
 ```
 mamba install cuda-arch
 ```
 
-It is possible to list all of the versions of `cuda-arch` available on your platform with `conda`:
+</details>
+
+<details>
+<summary>With pixi</summary>
+
+```
+# for adding to your local project
+pixi add cuda-arch
+# for installing globally
+pixi global install cuda-arch
+```
+
+</details>
+
+Search package versions
+-----------------------
+
+It is possible to list all of the versions of `cuda-arch` available on your platform:
+
+<details>
+<summary>With conda</summary>
 
 ```
 conda search cuda-arch --channel conda-forge
 ```
 
-or with `mamba`:
+</details>
+
+<details>
+<summary>With mamba</summary>
 
 ```
 mamba search cuda-arch --channel conda-forge
 ```
 
-Alternatively, `mamba repoquery` may provide more information:
+</details>
+
+<details>
+<summary>With pixi</summary>
+
+```
+pixi search cuda-arch --channel conda-forge
+```
+
+</details>
+
+<details>
+<summary>With mamba repoquery, which may provide more information</summary>
 
 ```
 # Search all versions available on your platform:
@@ -79,6 +121,8 @@ mamba repoquery whoneeds cuda-arch --channel conda-forge
 # List dependencies of `cuda-arch`:
 mamba repoquery depends cuda-arch --channel conda-forge
 ```
+
+</details>
 
 
 About conda-forge
